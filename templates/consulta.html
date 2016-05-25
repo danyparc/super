@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<ul>
+	{% for product in result %}
+		<!-- Se itera cada producto(tupla) de la lista result -->
+		<li><strong>{{product}}</strong></li>
+	{% endfor %}
+	</ul>
+{% endblock %}
