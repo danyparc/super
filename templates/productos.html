@@ -5,41 +5,45 @@
 <h1>Productos</h1>
 </div>
 <div class="row">
-<div class="col-md-6">
-<table class="table">
-<thead>
-<tr>
-  <th><strong>id</strong></th>
-  <th><strong>Nombre</strong></th>
-  <th><strong>Precio</strong></th>
-  <th><strong>Marca</strong></th>
-</tr>
-</thead>
-<tbody>
-{% for lista in result %}
-<tr>
-	{% for tupla in lista %}
-		<td>{{tupla}}</td>
-	{% endfor %}
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
+  <div class="col-md-6">
+    <table class="table">
+      <thead>
+        <tr>
+          <th><strong>id</strong></th>
+          <th><strong>Nombre</strong></th>
+          <th><strong>Precio</strong></th>
+          <th><strong>Departamento</strong></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lista in result %}
+        <tr>
+        	{% for tupla in lista %}
+        		<td>{{tupla}}</td>
+        	{% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  <div class="col-md-6">
+    <a href="{{url_for('identificar')}}"><button class="btn btn-primary"> CAJA </button></a>
+  </div>
 </div>
 <!--Agregar nuevo producto-->
 <div class="row">
-<div class="col-md-6">
-<h2>Nuevo producto</h2>
-<h4>Formato: id (varchar) | nombre (varchar) | precio (double) | marca (varchar)  </h4>
-<hr>
-<form action="/posti" method="post">
-  <input type="text" name="id">
-  <input type="text" name="nombre">
-  <input type="text" name="precio">
-  <input type="text" name="marca">
-  <input type="submit" value="Agregar" class="btn btn-default">
-</form>
+  <div class="col-md-6">
+    <h2>Nuevo Articulo</h2>
+    <hr>
+    <form action="/posti" method="post">
+      <label>id(INT)</label><input type="text" name="id">
+      <label>Nombre</label><input type="text" name="nombre">
+      <br>
+      <label>Precio</label><input type="text" name="precio">
+      <label>Depto (2)</label><input type="text" name="depto">
+      <input type="submit" value="Enviar" class="btn btn-primary">
+    </form>
+  </div>
 </div>
-</div>
+
 {% endblock %}

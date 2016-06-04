@@ -1,0 +1,809 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"ca",
+				"cambio"
+			],
+			[
+				"l",
+				"la"
+			],
+			[
+				"a",
+				"action	Attr"
+			],
+			[
+				"r",
+				"r"
+			],
+			[
+				"for",
+				"for	For Loop"
+			],
+			[
+				"fo",
+				"for	For Loop"
+			],
+			[
+				"to",
+				"total"
+			],
+			[
+				"I",
+				"INTO"
+			],
+			[
+				"IN",
+				"INSERT"
+			],
+			[
+				"h",
+				"h2	Tag"
+			],
+			[
+				"catn",
+				"cantidad"
+			],
+			[
+				"c",
+				"cantidad"
+			],
+			[
+				"if",
+				"if	If Condition"
+			],
+			[
+				"app",
+				"append"
+			],
+			[
+				"co",
+				"codigo"
+			],
+			[
+				"re",
+				"result"
+			],
+			[
+				"con",
+				"consulta"
+			],
+			[
+				"di",
+				"div	Tag"
+			],
+			[
+				"m",
+				"mixup"
+			],
+			[
+				"mi",
+				"MixUp_idMixUp"
+			],
+			[
+				"id",
+				"idMixUp"
+			],
+			[
+				"u",
+				"ul	Tag"
+			],
+			[
+				"rend",
+				"render_template_string"
+			],
+			[
+				"soc",
+				"socioclub"
+			],
+			[
+				"pr",
+				"proveedorsams"
+			],
+			[
+				"se",
+				"select"
+			],
+			[
+				"i",
+				"idclub"
+			],
+			[
+				"pro",
+				"proveedor"
+			],
+			[
+				"p",
+				"proveedor"
+			],
+			[
+				"vis",
+				"vista9"
+			],
+			[
+				"d",
+				"direccion"
+			],
+			[
+				"vist",
+				"vista4"
+			],
+			[
+				"ser",
+				"servicio"
+			],
+			[
+				"vi",
+				"vista9"
+			],
+			[
+				"vista",
+				"vista8"
+			],
+			[
+				"Vist",
+				"vista10"
+			],
+			[
+				"in",
+				"invalida"
+			],
+			[
+				"s",
+				"servicio"
+			],
+			[
+				"v",
+				"vista4"
+			],
+			[
+				"C",
+				"C"
+			],
+			[
+				"B",
+				"B"
+			],
+			[
+				"e",
+				"empleadomixup"
+			],
+			[
+				"ed",
+				"estado"
+			],
+			[
+				"prove",
+				"proveedor"
+			],
+			[
+				"soci",
+				"socio"
+			],
+			[
+				"pe",
+				"proveedorsams"
+			],
+			[
+				"ids",
+				"idservicio"
+			],
+			[
+				"proc",
+				"procedure"
+			],
+			[
+				"socio",
+				"socioclub"
+			],
+			[
+				"n",
+				"n"
+			],
+			[
+				"rf",
+				"rf2"
+			],
+			[
+				"cas",
+				"caso2"
+			],
+			[
+				"elem",
+				"elementos"
+			],
+			[
+				"ele",
+				"elementos"
+			],
+			[
+				"de",
+				"def	Function"
+			],
+			[
+				"ra",
+				"raw_input"
+			],
+			[
+				"pa",
+				"parseString"
+			],
+			[
+				"par",
+				"palabra"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\nfrom flask import Flask, render_template, request, redirect, url_for\nimport MySQLdb\n\nDB_HOST = 'localhost'\nDB_USER = 'root'\nDB_PASS = 'perritosalvaje'\nDB_NAME = 'mydb'\n\ndef run_query(query=''):\n    datos = [DB_HOST, DB_USER, DB_PASS, DB_NAME]\n\n    conn = MySQLdb.connect(*datos) # Conectar a la base de datos\n    cursor = conn.cursor()         # Crear un cursor\n    cursor.execute(query)          # Ejecutar una consulta\n\n    if query.upper().startswith('SELECT'):\n        data = cursor.fetchall()   # Traer los resultados de un select\n    else:\n        conn.commit()              # Hacer efectiva la escritura de datos\n        data = None\n\n    cursor.close()                 # Cerrar el cursor\n    conn.close()                   # Cerrar la conexión\n\n    return data\n\napp=Flask(__name__)\napp.debug=True\n\n@app.route('/')\ndef consulta():\n	query=\"SELECT * FROM articulo ORDER BY idArticulo ASC\"\n	#select COLUMN_NAME from NIFORMATION_SCHEMA.COLUMNS where TABLE_NAME='producto'\n	result=run_query(query)\n	#result queda como una lista de tuplas\n	return render_template('productos.html', result=result )\n\n@app.route('/posti', methods=[\"GET\",\"POST\"])\ndef postear():\n	if request.method == \"GET\":\n		return render_template('postear.html')\n	elif request.method == \"POST\":\n		aidi = request.form['id']\n		nombre = request.form['nombre']\n		precio = float(request.form['precio'])\n		depto = request.form['depto']\n		dato = \"'%s', '%s', %f, '%s' \" % (aidi, nombre, precio, depto)\n		query = \"INSERT INTO articulo VALUES (%s)\" %dato\n		run_query(query)\n		return consulta()\n\n@app.route('/caja', methods=[\"GET\",\"POST\"])\ndef identificar(r=[],ids=[],cant=[], total=0.0):\n	#busca un articulo por su id\n	if request.method == \"GET\":\n		return render_template('caja.html')\n	elif request.method == \"POST\":\n		codigo = request.form['id']\n		ids.append(codigo)\n		cantidad = request.form['cantidad']\n		cant.append(cantidad)\n		query = \"SELECT * FROM articulo WHERE idArticulo = '%s'\" % codigo \n		result = run_query(query)\n		result = list(result[0])\n		precio = result[2] * float(cantidad)\n		total = total + precio\n		result.append(cantidad)\n		result.append(total)\n		r.append(result)\n		total=0\n		for x in r:\n			total = total + x[5]\n		\n		return render_template('caja.html', result=r, cantidad=cant, total = total)\n\ndef cambio(total,pago):\n	cambio=\n		\n\n\nif __name__ == '__main__':\n	app.run(host='0.0.0.0')\n",
+			"file": "conecta2.py",
+			"file_size": 2406,
+			"file_write_time": 131092783799783865,
+			"settings":
+			{
+				"buffer_size": 2408,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "templates/caja.html",
+			"settings":
+			{
+				"buffer_size": 1312,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "<h3>Total: {{total}} </h3>\n    <h3>Cambio: {{cambio}}</h3>\n    <form action=\"/ticket\" method=\"post\">\n      <label>Paga:</label><input type=\"text\" name=\"paga\">\n      <input type=\"submit\" value=\"Cobrar\">\n    </form>",
+			"settings":
+			{
+				"buffer_size": 213,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "regis.sql",
+			"settings":
+			{
+				"buffer_size": 453,
+				"line_ending": "Unix",
+				"name": "INSERT INTO"
+			}
+		},
+		{
+			"file": "templates/productos.html",
+			"settings":
+			{
+				"buffer_size": 1267,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "templates/postear.html",
+			"settings":
+			{
+				"buffer_size": 399,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "templates/base.html",
+			"settings":
+			{
+				"buffer_size": 2938,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/danyparc/Escritorio/dev/cats.html",
+			"settings":
+			{
+				"buffer_size": 3153,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "conecta.py",
+			"settings":
+			{
+				"buffer_size": 2280,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 390.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 174.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/danyparc/Escritorio/super",
+		"/home/danyparc/Escritorio/super/templates"
+	],
+	"file_history":
+	[
+		"/home/danyparc/Escritorio/prac/Teoria/turing.py",
+		"/home/danyparc/Escritorio/flask/setup.py",
+		"/home/danyparc/Escritorio/flask/docs/quickstart.rst",
+		"/home/danyparc/Escritorio/mydb.sql",
+		"/home/danyparc/Escritorio/prac/Teoria/maquina.py",
+		"/home/danyparc/Escritorio/prac/Teoria/MT.py",
+		"/home/danyparc/Descargas/heartebreakersadecv.sql",
+		"/home/danyparc/Escritorio/dev/churchill/aboutus.html",
+		"/home/danyparc/Escritorio/super/templates/user.html",
+		"/home/danyparc/Escritorio/super/templates/index.html",
+		"/home/danyparc/Escritorio/super/templates/consulta.html",
+		"/home/danyparc/Escritorio/super/templates/submited.html",
+		"/home/danyparc/Escritorio/super/templates/forms.html",
+		"/home/danyparc/Escritorio/super/README.md",
+		"/home/danyparc/Escritorio/super/templates/productos.html",
+		"/home/danyparc/Escritorio/super/conecta2.py",
+		"/home/danyparc/Escritorio/flask/examples/jqueryexample/templates/layout.html",
+		"/home/danyparc/Escritorio/flask/examples/blueprintexample/simple_page/templates/pages/layout.html",
+		"/home/danyparc/Escritorio/super/templates/base.html",
+		"/home/danyparc/Escritorio/super/helloworld.py",
+		"/home/danyparc/Escritorio/dev/cats.html",
+		"/home/danyparc/Escritorio/flask/examples/jqueryexample/jqueryexample.py",
+		"/home/danyparc/Escritorio/flask/examples/jqueryexample/templates/index.html",
+		"/home/danyparc/Escritorio/flask/examples/persona/README.md",
+		"/home/danyparc/Escritorio/flask/examples/persona/persona.py",
+		"/home/danyparc/Escritorio/dev/sup.html",
+		"/home/danyparc/Escritorio/prac/db/procs.sql",
+		"/home/danyparc/Escritorio/super/conecta.py",
+		"/media/danyparc/UBUNTU 16_0/cueros.sql",
+		"/home/danyparc/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/danyparc/Escritorio/hola.py",
+		"/home/danyparc/Escritorio/flaskr/schema.sql",
+		"/home/danyparc/Escritorio/flaskr/flask/examples/flaskr/flaskr.py",
+		"/home/danyparc/Escritorio/flaskr/flaskr.py",
+		"/home/danyparc/Escritorio/Documento sin título 1",
+		"/home/danyparc/Escritorio/prac/empresa.sql",
+		"/home/danyparc/Escritorio/archi.txt",
+		"/home/danyparc/Escritorio/prac/db/prac11.sql",
+		"/home/danyparc/Escritorio/super/index.html",
+		"/home/danyparc/Escritorio/prac/yielci.py",
+		"/home/danyparc/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+		"/home/danyparc/Escritorio/super/__init__.py",
+		"/home/danyparc/Escritorio/prac/db/P10DB.sql",
+		"/home/danyparc/Escritorio/prac/cag.py",
+		"/home/danyparc/Escritorio/prac/DBP8.sql",
+		"/home/danyparc/Escritorio/prac/Teoria/p7tc.py",
+		"/home/danyparc/Escritorio/prac/chomtogrei.py",
+		"/home/danyparc/Escritorio/prac/glccad.py",
+		"/home/danyparc/Escritorio/p8-1.cpp",
+		"/home/danyparc/Escritorio/prac/dbP7.sql",
+		"/home/danyparc/Escritorio/prac/glc.py",
+		"/home/danyparc/Escritorio/prac/calcu.py",
+		"/home/danyparc/Escritorio/prac/Teoria/p7/poten.c",
+		"/home/danyparc/Escritorio/prac/recu.py",
+		"/home/danyparc/Escritorio/prac/pglc.py",
+		"/media/danyparc/FEF8D344F8D2F9BB/Users/danyel/Desktop/PYRAMIDEV/scpw4.sql",
+		"/media/danyparc/FEF8D344F8D2F9BB/Users/danyel/Desktop/PYRAMIDEV/Medical Services/medicalservices.mx/scpw4.sql",
+		"/home/danyparc/Escritorio/prac/Teoria/p7/potencias iguales.c",
+		"/media/danyparc/FEF8D344F8D2F9BB/Users/danyel/Desktop/ESCOM4/TC/Practicas/p7/potencias iguales.c",
+		"/home/danyparc/.config/sublime-text-3/Packages/Default/Default (Linux).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 38.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"for",
+			"producto",
+			"numero",
+			"i",
+			"[i]",
+			"i",
+			"tape",
+			"numero",
+			"href",
+			"k"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "conecta2.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2408,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								213,
+								213
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "templates/caja.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1312,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								22,
+								22
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 594.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 213,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								213,
+								213
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "regis.sql",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 453,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								453,
+								453
+							]
+						],
+						"settings":
+						{
+							"auto_name": "INSERT INTO",
+							"syntax": "Packages/SQL/SQL.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "templates/productos.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1267,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1221,
+								1221
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 396.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "templates/postear.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 399,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								46,
+								46
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "templates/base.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2938,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								946,
+								946
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 396.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "/home/danyparc/Escritorio/dev/cats.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3153,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1323,
+								1323
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 660.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "conecta.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2280,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1705,
+								1705
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 633.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 30.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "super.sublime-project",
+	"replace":
+	{
+		"height": 56.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 213.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -6,7 +6,7 @@ import MySQLdb
 DB_HOST = 'localhost'
 DB_USER = 'root'
 DB_PASS = 'perritosalvaje'
-DB_NAME = 'pydata'
+DB_NAME = 'mydb'
 
 def run_query(query=''):
     datos = [DB_HOST, DB_USER, DB_PASS, DB_NAME]
@@ -31,8 +31,8 @@ app.debug=True
 
 @app.route('/')
 def consulta():
-	query="SELECT * FROM producto ORDER BY id ASC"
-	#select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME='producto'
+	query="SELECT * FROM articulo ORDER BY idArticulo ASC"
+	#select COLUMN_NAME from NIFORMATION_SCHEMA.COLUMNS where TABLE_NAME='producto'
 	result=run_query(query)
 	#result queda como una lista de tuplas
 	return render_template('productos.html', result=result )
@@ -45,12 +45,40 @@ def postear():
 		aidi = request.form['id']
 		nombre = request.form['nombre']
 		precio = float(request.form['precio'])
-		marca = request.form['marca']
-		dato = "'%s', '%s', %f, '%s' " % (aidi, nombre, precio, marca)
-		query = "INSERT INTO producto VALUES (%s)" %dato
+		depto = request.form['depto']
+		dato = "'%s', '%s', %f, '%s' " % (aidi, nombre, precio, depto)
+		query = "INSERT INTO articulo VALUES (%s)" %dato
 		run_query(query)
-		#return render_template('newproduct.html',dato=dato)
 		return consulta()
+
+@app.route('/caja', methods=["GET","POST"])
+def identificar(r=[],ids=[],cant=[], total=0.0):
+	#busca un articulo por su id
+	if request.method == "GET":
+		return render_template('caja.html')
+	elif request.method == "POST":
+		codigo = request.form['id']
+		ids.append(codigo)
+		cantidad = request.form['cantidad']
+		cant.append(cantidad)
+		query = "SELECT * FROM articulo WHERE idArticulo = '%s'" % codigo 
+		result = run_query(query)
+		result = list(result[0])
+		precio = result[2] * float(cantidad)
+		total = total + precio
+		result.append(cantidad)
+		result.append(total)
+		r.append(result)
+		total=0
+		for x in r:
+			total = total + x[5]
+		
+		return render_template('caja.html', result=r, cantidad=cant, total = total)
+
+def cambio(total,pago):
+	cambio=
+		
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0')

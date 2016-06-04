@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <h2>Nuevo producto</h2>
-<h4>Formato: id (varchar) | nombre (varchar) | precio (double) | marca (varchar)  </h4>
+<h4>Formato: id (INT) | nombre (varchar 70) | precio (double) | depto (char 2)  </h4>
 <hr>
 <form action="/posti" method="post">
   <input type="text" name="id">
   <input type="text" name="nombre">
   <input type="text" name="precio">
-  <input type="text" name="marca">
+  <input type="text" name="depto">
   <input type="submit" value="Enviar">
 </form>
 {% endblock %}
