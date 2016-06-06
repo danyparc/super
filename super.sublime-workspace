@@ -4,6 +4,78 @@
 		"selected_items":
 		[
 			[
+				"re",
+				"return"
+			],
+			[
+				"su",
+				"subida"
+			],
+			[
+				"pa",
+				"pago"
+			],
+			[
+				"articul",
+				"articulos"
+			],
+			[
+				"ar",
+				"articulo"
+			],
+			[
+				"me",
+				"metodo"
+			],
+			[
+				"que",
+				"query"
+			],
+			[
+				"cant",
+				"cantidad"
+			],
+			[
+				"id",
+				"idTicket"
+			],
+			[
+				"art",
+				"artupla"
+			],
+			[
+				"a",
+				"artupla"
+			],
+			[
+				"articulo",
+				"articulo"
+			],
+			[
+				"for",
+				"for	For Loop"
+			],
+			[
+				"run",
+				"run_query"
+			],
+			[
+				"fo",
+				"form"
+			],
+			[
+				"ho",
+				"hour"
+			],
+			[
+				"op",
+				"option	Tag"
+			],
+			[
+				"se",
+				"select	Tag"
+			],
+			[
 				"ca",
 				"cambio"
 			],
@@ -12,20 +84,8 @@
 				"la"
 			],
 			[
-				"a",
-				"action	Attr"
-			],
-			[
 				"r",
 				"r"
-			],
-			[
-				"for",
-				"for	For Loop"
-			],
-			[
-				"fo",
-				"for	For Loop"
 			],
 			[
 				"to",
@@ -64,10 +124,6 @@
 				"codigo"
 			],
 			[
-				"re",
-				"result"
-			],
-			[
 				"con",
 				"consulta"
 			],
@@ -84,10 +140,6 @@
 				"MixUp_idMixUp"
 			],
 			[
-				"id",
-				"idMixUp"
-			],
-			[
 				"u",
 				"ul	Tag"
 			],
@@ -102,10 +154,6 @@
 			[
 				"pr",
 				"proveedorsams"
-			],
-			[
-				"se",
-				"select"
 			],
 			[
 				"i",
@@ -228,10 +276,6 @@
 				"raw_input"
 			],
 			[
-				"pa",
-				"parseString"
-			],
-			[
 				"par",
 				"palabra"
 			]
@@ -240,21 +284,10 @@
 	"buffers":
 	[
 		{
-			"contents": "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\nfrom flask import Flask, render_template, request, redirect, url_for\nimport MySQLdb\n\nDB_HOST = 'localhost'\nDB_USER = 'root'\nDB_PASS = 'perritosalvaje'\nDB_NAME = 'mydb'\n\ndef run_query(query=''):\n    datos = [DB_HOST, DB_USER, DB_PASS, DB_NAME]\n\n    conn = MySQLdb.connect(*datos) # Conectar a la base de datos\n    cursor = conn.cursor()         # Crear un cursor\n    cursor.execute(query)          # Ejecutar una consulta\n\n    if query.upper().startswith('SELECT'):\n        data = cursor.fetchall()   # Traer los resultados de un select\n    else:\n        conn.commit()              # Hacer efectiva la escritura de datos\n        data = None\n\n    cursor.close()                 # Cerrar el cursor\n    conn.close()                   # Cerrar la conexión\n\n    return data\n\napp=Flask(__name__)\napp.debug=True\n\n@app.route('/')\ndef consulta():\n	query=\"SELECT * FROM articulo ORDER BY idArticulo ASC\"\n	#select COLUMN_NAME from NIFORMATION_SCHEMA.COLUMNS where TABLE_NAME='producto'\n	result=run_query(query)\n	#result queda como una lista de tuplas\n	return render_template('productos.html', result=result )\n\n@app.route('/posti', methods=[\"GET\",\"POST\"])\ndef postear():\n	if request.method == \"GET\":\n		return render_template('postear.html')\n	elif request.method == \"POST\":\n		aidi = request.form['id']\n		nombre = request.form['nombre']\n		precio = float(request.form['precio'])\n		depto = request.form['depto']\n		dato = \"'%s', '%s', %f, '%s' \" % (aidi, nombre, precio, depto)\n		query = \"INSERT INTO articulo VALUES (%s)\" %dato\n		run_query(query)\n		return consulta()\n\n@app.route('/caja', methods=[\"GET\",\"POST\"])\ndef identificar(r=[],ids=[],cant=[], total=0.0):\n	#busca un articulo por su id\n	if request.method == \"GET\":\n		return render_template('caja.html')\n	elif request.method == \"POST\":\n		codigo = request.form['id']\n		ids.append(codigo)\n		cantidad = request.form['cantidad']\n		cant.append(cantidad)\n		query = \"SELECT * FROM articulo WHERE idArticulo = '%s'\" % codigo \n		result = run_query(query)\n		result = list(result[0])\n		precio = result[2] * float(cantidad)\n		total = total + precio\n		result.append(cantidad)\n		result.append(total)\n		r.append(result)\n		total=0\n		for x in r:\n			total = total + x[5]\n		\n		return render_template('caja.html', result=r, cantidad=cant, total = total)\n\ndef cambio(total,pago):\n	cambio=\n		\n\n\nif __name__ == '__main__':\n	app.run(host='0.0.0.0')\n",
-			"file": "conecta2.py",
-			"file_size": 2406,
-			"file_write_time": 131092783799783865,
-			"settings":
-			{
-				"buffer_size": 2408,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "templates/caja.html",
 			"settings":
 			{
-				"buffer_size": 1312,
+				"buffer_size": 1718,
 				"line_ending": "Unix"
 			}
 		},
@@ -267,20 +300,20 @@
 			}
 		},
 		{
-			"file": "regis.sql",
+			"file": "carnalmart.py",
 			"settings":
 			{
-				"buffer_size": 453,
-				"line_ending": "Unix",
-				"name": "INSERT INTO"
+				"buffer_size": 3772,
+				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "templates/productos.html",
+			"file": "templates/ticket.html",
 			"settings":
 			{
-				"buffer_size": 1267,
-				"line_ending": "Unix"
+				"buffer_size": 125,
+				"line_ending": "Unix",
+				"name": "{%extends \"base.html\"%}"
 			}
 		},
 		{
@@ -295,7 +328,7 @@
 			"file": "templates/base.html",
 			"settings":
 			{
-				"buffer_size": 2938,
+				"buffer_size": 2896,
 				"line_ending": "Unix"
 			}
 		},
@@ -354,6 +387,13 @@
 	],
 	"file_history":
 	[
+		"/home/danyparc/Escritorio/super/regis.sql",
+		"/home/danyparc/Escritorio/super/templates/productos.html",
+		"/home/danyparc/Escritorio/Web_Scraping/funciona.csv",
+		"/home/danyparc/Escritorio/Web_Scraping/my.csv",
+		"/home/danyparc/Escritorio/Web_Scraping/csv.js",
+		"/home/danyparc/Escritorio/carnalmart1.sql",
+		"/home/danyparc/Escritorio/super/conecta2.py",
 		"/home/danyparc/Escritorio/prac/Teoria/turing.py",
 		"/home/danyparc/Escritorio/flask/setup.py",
 		"/home/danyparc/Escritorio/flask/docs/quickstart.rst",
@@ -368,8 +408,6 @@
 		"/home/danyparc/Escritorio/super/templates/submited.html",
 		"/home/danyparc/Escritorio/super/templates/forms.html",
 		"/home/danyparc/Escritorio/super/README.md",
-		"/home/danyparc/Escritorio/super/templates/productos.html",
-		"/home/danyparc/Escritorio/super/conecta2.py",
 		"/home/danyparc/Escritorio/flask/examples/jqueryexample/templates/layout.html",
 		"/home/danyparc/Escritorio/flask/examples/blueprintexample/simple_page/templates/pages/layout.html",
 		"/home/danyparc/Escritorio/super/templates/base.html",
@@ -431,6 +469,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Ticket",
+			"Ticketc",
 			"for",
 			"producto",
 			"numero",
@@ -458,52 +498,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "conecta2.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2408,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								213,
-								213
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
 					"file": "templates/caja.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1312,
+						"buffer_size": 1718,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								22,
-								22
+								775,
+								775
 							]
 						],
 						"settings":
@@ -513,14 +525,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 594.0,
+						"translation.y": 198.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 1,
 					"semi_transient": false,
 					"settings":
 					{
@@ -543,70 +555,68 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "carnalmart.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3772,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2837,
+								2837
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 2062.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "regis.sql",
+					"file": "templates/ticket.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 453,
+						"buffer_size": 125,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								453,
-								453
+								98,
+								98
 							]
 						],
 						"settings":
 						{
-							"auto_name": "INSERT INTO",
-							"syntax": "Packages/SQL/SQL.sublime-syntax"
+							"auto_name": "{%extends \"base.html\"%}",
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "templates/productos.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1267,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1221,
-								1221
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 396.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 4,
 					"file": "templates/postear.html",
 					"semi_transient": false,
 					"settings":
@@ -630,24 +640,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 5,
 					"file": "templates/base.html",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2938,
+						"buffer_size": 2896,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								946,
-								946
+								1787,
+								1787
 							]
 						],
 						"settings":
@@ -655,14 +665,14 @@
 							"syntax": "Packages/HTML/HTML.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 396.0,
+						"translation.y": 660.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 6,
 					"file": "/home/danyparc/Escritorio/dev/cats.html",
 					"semi_transient": false,
 					"settings":
@@ -688,11 +698,11 @@
 						"translation.y": 660.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 7,
 					"file": "conecta.py",
 					"semi_transient": false,
 					"settings":
@@ -715,10 +725,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 633.0,
+						"translation.y": 1293.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]

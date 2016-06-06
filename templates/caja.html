@@ -31,9 +31,18 @@
   <div class="col-md-6">
     <h3>Total: {{total}} </h3>
     <h3>Cambio: {{cambio}}</h3>
-    <form action="/ticket" method="post">
-      <label>Paga:</label><input type="text" name="paga">
-      <input type="submit" value="Cobrar">
+    <form action="/caja" method="post">
+      <label>Pago:</label><input type="text" name="pago">
+      <br><br>
+      <label>Metodo:</label>
+      <select name="metodo">
+        <option value="Efectivo">Efectivo</option>
+        <option value="Credito">Credito</option>
+        <option value="Debito">Debito</option>
+        <option value="Vales de despensa">Vales</option>
+        <option value="Monedero Electronico">Monedero</option>
+      </select>
+      <input type="submit" class="btn btn-primary" name="subida" value="Cobrar">
     </form>
 
   </div>
@@ -46,7 +55,7 @@
     <form action="/caja" method="post">
       <label>Codigo:</label> <input type="text" name="id">
       <label>Cantidad:</label> <input type="text" name="cantidad">
-      <input type="submit" value="Agregar" class="btn btn-default">
+      <input type="submit" name="subida" value="Agregar" class="btn btn-default">
     </form>
   </div>
 </div>
