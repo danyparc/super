@@ -18,7 +18,7 @@ def run_query(query=''):
     cursor = conn.cursor()         # Crear un cursor
     cursor.execute(query)          # Ejecutar una consulta
 
-    if query.upper().startswith('SELECT'):
+    if query.upper().startswith('SELECT') or query.upper().startswith('CALL'):
         data = cursor.fetchall()   # Traer los resultados de un select
     else:
         conn.commit()              # Hacer efectiva la escritura de datos
@@ -29,12 +29,18 @@ def run_query(query=''):
 
     return data
 
+
 app=Flask(__name__)
 app.debug=True
 
 
 @app.route('/')
-def consulta():
+def log():
+	return render_template('index.html')
+
+
+@app.route('/admin')
+def admin():
 	query="SELECT * FROM articulo ORDER BY idArticulo ASC"
 	#select COLUMN_NAME from NIFORMATION_SCHEMA.COLUMNS where TABLE_NAME='producto'
 	result=run_query(query)
@@ -55,7 +61,6 @@ def postear():
 		query = "INSERT INTO articulo VALUES (%s)" %dato
 		run_query(query)
 		return consulta()
-
 
 def ticket(total, pago, articulos, metodo):
 	#Creamos el ticket en laDB
@@ -84,15 +89,30 @@ def ticket(total, pago, articulos, metodo):
 	#Registramos el metodo con el que se pago
 	valores = "%d, %d" % (idTicket, metodo)
 	query = "INSERT INTO ticketmetodo VALUES(%s)" % valores
+	run_query(query)
+	#Se mandan los datos a imprimir
+	return render_template('ticket.html', idTicket=idTicket, fecha=fecha, 
+		   hora=hora, impuesto=impuesto, total=total, pago=pago, metodo=metodo,
+		   cambio=cambio, articulos=articulos)
+	
+"""@app.route('/imprimeTicket')
+def imprimeTicket():
+	return render_template('ticket.html', idTicket=idTicket, fecha=fecha, 
+		   hora=hora, impuesto=impuesto, total=total, pago=pago, metodo=metodo,
+		   cambio=cambio, articulos=articulos)"""
 
 total=0.0
 
 @app.route('/caja', methods=["GET","POST"])
-def identificar(total = total,r=[],ids=[],cant=[]):
+def caja(r=[],ids=[],cant=[]):
 	#busca un articulo por su id
+	global total
+	subtotal = 0.0
 	if request.method == "GET":
 		return render_template('caja.html')
+
 	elif request.method == "POST":
+
 		if request.form['subida'] == "Agregar":
 			codigo = request.form['id']
 			ids.append(codigo)
@@ -102,9 +122,9 @@ def identificar(total = total,r=[],ids=[],cant=[]):
 			result = run_query(query)
 			result = list(result[0])
 			precio = result[2] * float(cantidad)
-			total = total + precio
+			subtotal = subtotal + precio
 			result.append(cantidad)
-			result.append(total)
+			result.append(subtotal)
 			r.append(result)
 			total=0
 			for x in r:
@@ -113,15 +133,8 @@ def identificar(total = total,r=[],ids=[],cant=[]):
 
 		if request.form['subida'] == 'Cobrar':
 			pago=float(request.form['pago'])
-			metodo = 1
-			ticket(total,pago,r,metodo)
-			return render_template('ticket.html')
-		
-	
-	
-
-		
-
+			metodo = int(request.form['metodo'])
+			return ticket(total,pago,r,metodo)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0')

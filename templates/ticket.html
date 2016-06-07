@@ -1,6 +1,38 @@
 {%extends "base.html"%}
 {% block content %}
+<div class="ticket" style="font-family: Arial, serif; font-weight: 400;">
 <div class="page-header">
-<h1>Exito al subir el ticket</h1>
+<h1 style="font-family: 'Lobster', cursive; color: red; font-weight: 800;">Carnal-Mart</h1>
 </div>
+<h2>Carnal-Mart S.A. de C.V.</h2>
+<p>Av. Central S/N,Las Americas, Sosa Texcoco,55075 Ecatepec de Morelos, Estado de Mexico. </p>
+<p>Tel: 55 1389 4394 | RFC: CRNLMRT2319X </p>
+<p>No.ticket : {{idTicket}}<p>
+<p>Fecha de compra: {{fecha}}	|	Hora: {{hora}}</p>
+<table class="table">
+    <thead>
+      <tr>
+        <th><strong>id</strong></th>
+        <th><strong>Nombre</strong></th>
+        <th><strong>Precio</strong></th>
+        <th><strong>Departamento</strong></th>
+        <th><strong>Cantidad</strong></th>
+        <th><strong>Subtotal</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for articulo in articulos %}
+      <tr>
+      	{% for detalle in articulo %}
+      		<td>{{detalle}}</td>
+      	{% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h4>Pago: {{pago}} | Metodo de pago: {{metodo}}</h4>
+  <h4>IVA: {{impuesto}}</h4>
+  <h4>Total: {{total}}</h4>
+  <h4>Cambio: {{cambio}}</h4>
+  </div>
 {% endblock %}
