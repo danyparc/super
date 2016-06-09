@@ -62,6 +62,49 @@ def postear():
 		run_query(query)
 		return consulta()
 
+
+@app.route('/ventasmes', methods=["GET","POST"])
+def ventasmes():
+	if request.method == "GET":
+		return render_template('ventasmes.html')
+	elif request.method == "POST":
+		mes = request.form['mes']
+		anio = request.form['anio']
+		query = "call proc1(%s,%s);" % (mes,anio)
+		item = run_query(query)
+		return render_template('ventasmes.html', items=item )
+
+@app.route('/productop', methods=["GET","POST"])
+def productop():
+	if request.method == "GET":
+		return render_template('productop.html')
+	elif request.method == "POST":
+		anio = request.form['anio']
+		query = "call proc4(%s);" % (anio)
+		item = run_query(query)
+		return render_template('productop.html', items=item )
+
+
+@app.route('/topdep', methods=["GET","POST"])
+def topdep():
+	if request.method == "GET":
+		return render_template('topdep.html')
+	elif request.method == "POST":
+		anio = request.form['anio']
+		query = "call proc5(%s);" % (anio)
+		itemi = run_query(query)
+		return render_template('topdep.html', itemi=itemi )
+
+"""@app.route('/periodoprod', methods=["GET","POST"])
+def periodoprod():
+	if request.method == "GET":
+		return render_template('periodoprod.html')
+	elif request.method == "POST":
+		anio = request.form['anio']
+		query = "call proc5(%s);" % (anio)
+		itemi = run_query(query)
+		return render_template('periodoprod.html', itemi=itemi )"""
+
 def ticket(total, pago, articulos, metodo):
 	#Creamos el ticket en laDB
 	hoy = datetime.datetime.now()

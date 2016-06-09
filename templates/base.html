@@ -41,11 +41,11 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reportes <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Ventas totales</a></li>
+            <li><a href="{{url_for('ventasmes')}}">Ventas totales</a></li>
             <li><a href="#">Ventas por cajero</a></li>
-            <li><a href="#">Ventas por producto</a></li>
+            <li><a href="{{url_for('topdep')}}">Ventas por Sucursal</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">Productos mas vendidos</a></li>
+            <li><a href="{{url_for('productop')}}">Productos mas vendidos</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">Otro Reporte</a></li>
           </ul>

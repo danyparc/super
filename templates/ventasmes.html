@@ -1,0 +1,35 @@
+{% extends 'base.html'%}
+{% block content %}
+<div class="page-header">
+<h1>Reportes de Ventas</h1>
+</div>
+<div class="row">
+  <div class="col-md-6">
+  <form action="/ventasmes" method="post">
+  	<label>MES: </label><input type="text" name="mes">
+  	<label>AÑO:</label><input type="text" name="anio">
+    <input type="submit" value="Consultar" class="btn btn-primary">
+  </form>
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th><strong>No. Ventas</strong></th>
+        <th><strong>Mes Ventas</strong></th>
+        <th><strong>Monto</strong></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for articulo in items %}
+      <tr>
+      	{% for detalle in articulo %}
+      		<td>{{detalle}}</td>
+      	{% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+{% endblock %}
